@@ -1,0 +1,63 @@
+{% load viz_tags %}
+
+
+{% if eqtls.count != 0 %}
+    <table id="eqtl-collapsable-table" class="table table-condensed table-hover table-to-sort">
+        <thead>
+            <tr>
+                <th>rs Id</th>
+                <th>Chr</th>
+                <th>BP</th>
+
+                <th>A1</th>
+                <th>A2</th>
+
+                <th data-sort="float">PGC2 SCZ A1 Frequency in Cases</th>
+                <th data-sort="float">PGC2 SCZ A1 Frequency in Controls</th>
+
+                <th data-sort="float">PGC2 SCZ Odds Ratio</th>
+                <th data-sort="float">PGC2 SCZ P-value</th>
+
+                <th data-sort="float">eQTL B</th>
+                <th data-sort="float">eQTL P-value</th>
+                <th data-sort="float">eQTL FDR</th>
+            </tr>
+        </thead>
+        <tbody>
+    {% for e in eqtls %}
+        <tr>
+            <td><a href="{% url 'viz:eqtl' e.snp.id %}">{{e.snp.rs_Id}}</a></td>
+            <td>{{e.snp.chrom_name}}</td>
+            <td>{{e.snp.position}}</td>
+
+            <td>{{e.snp.allele_a1}}</td>
+            <td>{{e.snp.allele_a2}}</td>
+
+            <td>{{e.snp.pgc_scz2_case_freq_a1}}</td>
+            <td>{{e.snp.pgc_scz2_cont_freq_a1}}</td>
+
+            <td>{{e.snp.scz_odd_ratio|floatformat:3}}</td>
+            <td>{{e.snp.scz_p_val|floatformat:3}}</td>
+
+
+            <td>{{e.beta|beta_dir}}
+            {% if e.beta > 0 %}
+                <i class="fa fa-arrow-up"></i>
+            {% else %}
+                <i class="fa fa-arrow-down"></i>
+            {% endif %}
+            </td>
+
+            <td>{{e.p_val|bin_pval}}</td>
+            <td>{{e.adj_p_val|bin_pval}}</td>
+        </tr>
+    {% endfor %}
+        </tbody>
+    </table>
+
+{% else %}
+
+    <p> There were no significant eqtls for this gene.</p>
+
+{% endif %}
+

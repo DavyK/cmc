@@ -1,0 +1,26 @@
+{% extends 'cmc/base.html' %}
+
+{% block content %}
+<h4>WGCNA Modules:</h4>
+<table class="table table-condensed table-hover" id="diff-expression-table">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Size</th>
+                    <th>Mean Expression</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {% for m in modules %}
+                <tr>
+
+                    <td>{{m.name}}</td>
+                    <td>{{m.size}}</td>
+                    <td>{{m.mean_expr}}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+</table>
+
+{% endblock %}

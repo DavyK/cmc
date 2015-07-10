@@ -1,0 +1,67 @@
+{% extends 'cmc/base.html' %}
+{% load viz_tags %}
+{% block content %}
+    <h4>All {{egenes|length}} eGenes for this SNP:</h4>
+
+    <table class="table table-condensed table-hover">
+        <tr>
+        <th>rs Id</th>
+        <th>Chr</th>
+        <th>BP</th>
+
+        <th>A1</th>
+        <th>A2</th>
+
+        <th>PGC2 SCZ A1 Frequency in Cases</th>
+        <th>PGC2 SCZ A1 Frequency in Controls</th>
+
+        <th>PGC2 SCZ Odds Ratio</th>
+        <th>PGC2 SCZ P-value</th>
+
+    </tr>
+    <tr>
+        <td>{{eqtl.snp.rs_Id}}</a></td>
+        <td>{{eqtl.snp.chrom_name}}</td>
+        <td>{{eqtl.snp.position}}</td>
+
+        <td>{{eqtl.snp.allele_a1}}</td>
+        <td>{{eqtl.snp.allele_a2}}</td>
+
+        <td>{{eqtl.snp.pgc_scz2_case_freq_a1}}</td>
+        <td>{{eqtl.snp.pgc_scz2_cont_freq_a1}}</td>
+
+        <td>{{eqtl.snp.scz_odd_ratio}}</td>
+        <td>{{eqtl.snp.scz_p_val}}</td>
+
+
+    </tr>
+    </table>
+
+    <table class="table table-condensed table-hover">
+        <tr>
+            <th>HGNC Symbol</th>
+            <th>Ensembl Gene Id</th>
+            <th>Chromosome</th>
+            <th>Strand</th>
+            <th>Gene Start</th>
+            <th>Gene End</th>
+            <th>eQTL B</th>
+            <th>eQTL P-value</th>
+            <th>eQTL FDR</th>
+        </tr>
+    {% for e in egenes %}
+        <tr>
+            <td><a href="{% url 'viz:gene' e.gene.id %}">{{e.gene.ensg_Id}}</a></td>
+            <td>{{e.gene.symbol}}</td>
+            <td>{{e.gene.chrom_name}}</a></td>
+            <td>{{e.gene.strand}}</td>
+            <td>{{e.gene.start_bp}}</td>
+            <td>{{e.gene.end_bp}}</td>
+            <td>{{e.beta|beta_dir}}</td>
+            <td>{{e.p_val|bin_pval}}</td>
+            <td>{{e.adj_p_val|bin_pval}}</td>
+
+        </tr>
+    {% endfor %}
+    </table>
+{% endblock %}

@@ -1,0 +1,132 @@
+{% extends 'cmc/base.html' %}
+
+{% block content %}
+
+    {% if gene %}
+
+        <h3>{{gene.ensg_Id}} ({{gene.symbol}})</h3>
+        <h5>{{gene.chrom_name}}:{{gene.start_bp}}..{{gene.end_bp}}</h5>
+
+        <h5>{{isoforms|length}} Isoforms detected by MISO</h5>
+
+        {% if dge %}
+            <h4>Differential Expression:</h4>
+            <h5>Gene:</h5>
+            <table class="table table-condensed table-hover" id="diff-expression-table">
+                <thead>
+                <tr>
+                    <th>Gene/Isoform?</th>
+                    <th>Symbol</th>
+                    <th>Ensembl Id</th>
+                    <th>Average Expression</th>
+                    <th>Log2 Fold Change</th>
+                    <th>P-value</th>
+                    <th>Adj. P-value</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Gene</td>
+                    <td>{{gene.symbol}}</td>
+                    <td>{{gene.ensg_Id}}</td>
+                    <td>{{dge.aveExpr}}</td>
+                    <td>{{dge.logFC}}</td>
+                    <td>{{dge.p_val}}</td>
+                    <td>{{dge.adj_p_val}}</td>
+                </tr>
+                {% for iso in die %}
+                <tr>
+                    <td>Isoform</td>
+                    <td>{{gene.symbol}}</td>
+                    <td>{{iso.isoform.enst_Id}}</td>
+                    <td>{{iso.aveExpr}}</td>
+                    <td>{{iso.logFC}}</td>
+                    <td>{{iso.p_val}}</td>
+                    <td>{{iso.adj_p_val}}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+            <h4>WGCNA:</h4>
+            <p>This gene is in the {{module.parent_module.name}} module with {{module.parent_module.size}} other genes.</p>
+
+            <table class="table table-condensed table-hover">
+                <tr>
+                    <th>To All</th>
+                    <th>To In</th>
+                    <th>To Out</th>
+                    <th>To Diff</th>
+                    <th>To In Normed</th>
+                    <th>To Out Normed</th>
+                    
+                    <th>K All</th>
+                    <th>K In</th>
+                    <th>K Out</th>
+                    <th>K Diff</th>
+                    <th>K In Normed</th>
+                    <th>K Out Normed</th>
+                </tr>
+                <tr>
+                    
+                    <td>{{module.to_all|floatformat:3}}</td>
+                    <td>{{module.to_in|floatformat:3}}</td>
+                    <td>{{module.to_out|floatformat:3}}</td>
+                    <td>{{module.to_diff|floatformat:3}}</td>
+                    <td>{{module.to_in_normed|floatformat:3}}</td>
+                    <td>{{module.to_all_normed|floatformat:3}}</td>
+                    
+                    <td>{{module.k_all|floatformat:3}}</td>
+                    <td>{{module.k_in|floatformat:3}}</td>
+                    <td>{{module.k_out|floatformat:3}}</td>
+                    <td>{{module.k_diff|floatformat:3}}</td>
+                    <td>{{module.k_in_normed|floatformat:3}}</td>
+                    <td>{{module.k_all_normed|floatformat:3}}</td>
+                    
+                </tr>
+            </table>
+
+            <a class="btn btn-primary" id="module-show-button" role="button" data-module-id="{{module.parent_module.id}}" data-toggle="collapse" href="#module-collapsable" aria-expanded="false" aria-controls="module-collapsable">
+                Show Module Genes <span id="loadingModules" class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+            </a>
+            <div class="collapse maxed-height well" id="module-collapsable">
+
+                {% include 'viz/module_table.html' %}
+            </div>
+
+            <h4>eQTLs:</h4>
+            <p>{{gene.ensg_Id}} ({{gene.symbol}}) has {{eqtl_count}} eQTLs.</p>
+            <a class="btn btn-primary" id="eqtl-show-button" role="button" data-gene-id="{{gene.id}}" data-toggle="collapse" href="#eqtl-collapsable" aria-expanded="false" aria-controls="eqtl-collapsable">
+                Show eQTLs <span id="loadingEqtls" class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+            </a>
+            <div class="collapse" id="eqtl-collapsable">
+                {% include 'viz/eqtl_table.html' %}
+            </div>
+
+
+            <!-- TODO: add biodalliance with tract configured to start on current gene, along with the bigwig tracts Kristin made -->
+            <!-- TODO: does the SVA tracker really belong in data source? -->
+            <!-- TODO: Gene Name suggestion in search box -->
+            <!-- TODO: Multi-Gene View? As heatmap?, as table? -->
+            <!-- TODO: Link to all modules? -->
+            <!-- TODO: Module eigen gene association with scz -->
+            <!-- TODO: Better error page saying when something wasn't analysed/ expressed. -->
+        {% else %}
+            <p>Looks like that gene wasn't expressed at a high enough level to make it past our filtering thresholds.</p>
+        {% endif %}
+
+    {% elif result_genes %}
+        <p>Did you mean:</p>
+        <ul>
+            {% for g in result_genes %}
+                <li>{{g.ensg_Id}} ({{g.symbol}})</li>
+            {% endfor %}
+        </ul>
+
+    {% else %}
+        <h5>Sorry, we couldn't find that gene.</h5>
+    {% endif %}
+
+
+    
+{% endblock %}

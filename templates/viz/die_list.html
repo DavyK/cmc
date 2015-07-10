@@ -1,0 +1,33 @@
+{% extends 'cmc/base.html' %}
+
+{% block content %}
+<h4>Differentially Expressed Isoforms:</h4>
+<table class="table table-condensed table-hover" id="diff-expression-table">
+                <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Symbol</th>
+                    <th>Ensembl Id</th>
+                    <th>Average Expression</th>
+                    <th>Log2 Fold Change</th>
+                    <th>P-value</th>
+                    <th>Adj. P-value</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {% for iso in die_results %}
+                <tr>
+                    <td>{{forloop.counter}}</td>
+                    <td>{{iso.isoform.parent_gene.symbol}}</td>
+                    <td><a href="{% url 'viz:gene' iso.isoform.parent_gene.id %}">{{iso.isoform.enst_Id}}</a></td>
+                    <td>{{iso.aveExpr}}</td>
+                    <td>{{iso.logFC}}</td>
+                    <td>{{iso.p_val}}</td>
+                    <td>{{iso.adj_p_val}}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+    </table>
+
+{% endblock %}

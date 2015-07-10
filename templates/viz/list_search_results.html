@@ -1,0 +1,12 @@
+{% extends 'cmc/base.html' %}
+
+{% block content %}
+<h4>Your search returned more than one result.</h4>
+<p>Please choose the gene you were looking for from the list below.</p>
+<ul>
+    {% for g in search_results %}
+        <li>{{g.ensg_Id}} (Symbol: {{g.symbol}}) - {{g.chrom_name}}:{{g.start_bp}}..{{g.end_bp}}</li>
+    {% endfor %}
+</ul>
+
+{% endblock %}

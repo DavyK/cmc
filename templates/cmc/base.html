@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+{% load viz_tags %}
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}/css/cmcviz.css">
+    <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}/font-awesome-4.3.0/css/font-awesome.min.css">
+</head>
+<body>
+
+
+<div class="container-fluid">
+    <div class="col-sm-2">
+        <h5>Analyses Results Sets:</h5>
+        <ul class="nav nav-pills nav-stacked">
+            <li><a href="{% url 'viz:list_de_genes' %}">All DE Genes</a></li>
+            <li><a href="{% url 'viz:list_de_isos' %}">All DE Isoforms</a></li>
+            <li><a href="{% url 'viz:list_modules' %}">WGCNA Modules</a></li>
+            <li><a href="#">Sherlock RTC results</a></li>
+            <li><a href="#">Genetics Overlaps</a></li>
+
+        </ul>
+    </div>
+    <div class="col-sm-8">
+        <div class="row">
+        <div class="col-sm-8 col-sm-offset-2">
+        <form method="POST" action="{% url 'viz:search' %}" class="form-inline">
+            {% csrf_token %}
+            <div class="form-group">
+                <input type="text" name="search_term" class="form-control" placeholder=" Search by Gene Symbol or Ensembl Id">
+            </div>
+            <select class="form-control">
+                {% for ds in data_sources %}
+                    <option value="{{ds.id}}">{{ds}}</option>
+                {% endfor %}
+            </select>
+            <input class="btn btn-primary" type="SUBMIT" value="Search">
+        </form>
+        </div>
+        </div>
+{% block content %}
+{% endblock %}
+    </div>
+</div>
+</body>
+    <script src="{{STATIC_URL}}/js/jquery-1.11.3.min.js"></script>
+    <script src="{{STATIC_URL}}/js/bootstrap.js"></script>
+    <script src="{{STATIC_URL}}/js/stupidtable.js"></script>
+    <script src="{{STATIC_URL}}/js/cmc.js"></script>
+</html>

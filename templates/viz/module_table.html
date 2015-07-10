@@ -1,0 +1,5 @@
+<ul id="module-collapsable-table" class="list-inline">
+{% for g in module_genes %}
+    <li><a class="btn btn-default" href="{% url 'viz:gene' g.gene.id %}">{{g.gene.ensg_Id}} ({{g.gene.symbol}})</a></li>
+{% endfor %}
+</ul>

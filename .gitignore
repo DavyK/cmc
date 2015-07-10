@@ -1,0 +1,7 @@
+db.sqlite3
+.htaccess
+.idea/
+.idea/*
+dataimporter/
+dataimporter/*
+
