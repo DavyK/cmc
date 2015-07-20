@@ -306,7 +306,16 @@ def process_die_results_file(file_name):
 
 
 def process_eqtls_file(file_name):
+    """
+        reads each line of the eqtl results file, splitting out the SNP data from the eqtl data.
+        Insert all snps to the DB
+        The insert all eqtls as the eqtl references SNP id.
+        Probably a better way to do this.
 
+    :param file_name: path of file with eqtl results
+
+    :return:
+    """
     eqtl_file = open(file_name)
 
     header = eqtl_file.next().rstrip().rsplit()
@@ -418,6 +427,7 @@ if __name__== '__main__':
 
     args_file = open(sys.argv[1], 'r')
     args = {}
+    # A file detailing the full paths of the data, for each of the data types. (genes, dde results, eqtls, etc)
     for line in args_file:
         fields = line.rstrip().rsplit(": ")
         name, value = fields[0], fields[1]
