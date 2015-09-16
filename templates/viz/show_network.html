@@ -1,0 +1,174 @@
+{% extends 'cmc/base.html' %}
+
+{% block head %}
+<script src="{{STATIC_URL}}/js/cytoscape.js/build/cytoscape.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/jquery.qtip.min.js"></script>
+<link href="http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/jquery.qtip.min.css" rel="stylesheet" type="text/css" />
+<script src="https://cdn.rawgit.com/cytoscape/cytoscape.js-qtip/2.1.0/cytoscape-qtip.js"></script>
+<script>
+$(document).ready(function() {
+    'use strict';
+
+    var cy = cytoscape({
+        container: document.getElementById('cy'),
+        elements : [
+            { group: 'nodes',  data: { id: 'n1', name: 'ANK3' } },
+            { group: 'nodes',  data: { id: 'n2', name: 'SCN2A' } },
+            { group: 'nodes',  data: { id: 'n3', name: 'FADD' } },
+            { group: 'nodes',  data: { id: 'n4', name: 'FAS' }  },
+            { group: 'nodes',  data: { id: 'n5', name: 'SCNN1B' } },
+            { group: 'nodes',  data: { id: 'n6', name: 'CNTN1' } },
+            { group: 'nodes',  data: { id: 'n7', name: 'SCN1B' } },
+            { group: 'nodes',  data: { id: 'n8', name: 'KCNC1' } },
+            { group: 'nodes',  data: { id: 'n9', name: 'KCNC2' } },
+            { group: 'nodes',  data: { id: 'n10', name: 'CRKL' } },
+            { group: 'nodes',  data: { id: 'n11', name: 'PIK3R1' }},
+            { group: 'nodes',  data: { id: 'n12', name: 'HOOK1' } },
+            { group: 'nodes',  data: { id: 'n13', name: 'SMAD2' } },
+            { group: 'nodes',  data: { id: 'n14', name: 'SMAD3' } },
+            { group: 'nodes',  data: { id: 'n15', name: 'SPTBN4' } },
+            { group: 'nodes',  data: { id: 'n16', name: 'RYR2' } },
+            { group: 'nodes',  data: { id: 'n17', name: 'SRI' }},
+            { group: 'nodes',  data: { id: 'n18', name: 'PPM1A' }},
+            { group: 'nodes',  data: { id: 'n19', name: 'PCBD1' }},
+            { group: 'nodes',  data: { id: 'n20', name: 'CABP1' }},
+            { group: 'nodes',  data: { id: 'n21', name: 'RIMS1' }},
+            { group: 'nodes',  data: { id: 'n22', name: 'CACNB3' }},
+            { group: 'nodes',  data: { id: 'n23', name: 'CACNA2D4' }},
+            { group: 'nodes',  data: { id: 'n24', name: 'GNB1' }},
+            { group: 'nodes',  data: { id: 'n25', name: 'PRKACA' }},
+            { group: 'nodes',  data: { id: 'n26', name: 'CACNA1C' }},
+            { group: 'edges',  data: { id: 'e1', source: 'n1', target: 'n2' } },
+            { group: 'edges',  data: { id: 'e2', source: 'n1', target: 'n3' } },
+            { group: 'edges',  data: { id: 'e3', source: 'n1', target: 'n4' } },
+            { group: 'edges',  data: { id: 'e4', source: 'n1', target: 'n5' } },
+            { group: 'edges',  data: { id: 'e5', source: 'n1', target: 'n6' } },
+            { group: 'edges',  data: { id: 'e6', source: 'n1', target: 'n7' } },
+            { group: 'edges',  data: { id: 'e7', source: 'n1', target: 'n8' } },
+            { group: 'edges',  data: { id: 'e8', source: 'n1', target: 'n9' } },
+            { group: 'edges',  data: { id: 'e9', source: 'n1', target: 'n10' } },
+            { group: 'edges',  data: { id: 'e10', source: 'n1', target: 'n11' } },
+            { group: 'edges',  data: { id: 'e11', source: 'n1', target: 'n12' } },
+            { group: 'edges',  data: { id: 'e12', source: 'n1', target: 'n13' } },
+            { group: 'edges',  data: { id: 'e13', source: 'n1', target: 'n14' } },
+            { group: 'edges',  data: { id: 'e14', source: 'n1', target: 'n15' } },
+            { group: 'edges',  data: { id: 'e15', source: 'n3', target: 'n4' } },
+            { group: 'edges',  data: { id: 'e16', source: 'n5', target: 'n6' } },
+            { group: 'edges',  data: { id: 'e17', source: 'n6', target: 'n7' } },
+            { group: 'edges',  data: { id: 'e18', source: 'n10', target: 'n11' } },
+            { group: 'edges',  data: { id: 'e19', source: 'n13', target: 'n14' } },
+            { group: 'edges',  data: { id: 'e20', source: 'n13', target: 'n16' }},
+            { group: 'edges',  data: { id: 'e21', source: 'n11', target: 'n18' }},
+            { group: 'edges',  data: { id: 'e22', source: 'n16', target: 'n25' }},
+            { group: 'edges',  data: { id: 'e23', source: 'n16', target: 'n17' }},
+            { group: 'edges',  data: { id: 'e24', source: 'n22', target: 'n23' }},
+            { group: 'edges',  data: { id: 'e25', source: 'n26', target: 'n16' }},
+            { group: 'edges',  data: { id: 'e26', source: 'n26', target: 'n17' }},
+            { group: 'edges',  data: { id: 'e27', source: 'n26', target: 'n18' }},
+            { group: 'edges',  data: { id: 'e28', source: 'n26', target: 'n19' }},
+            { group: 'edges',  data: { id: 'e29', source: 'n26', target: 'n20' }},
+            { group: 'edges',  data: { id: 'e30', source: 'n26', target: 'n21' }},
+            { group: 'edges',  data: { id: 'e31', source: 'n26', target: 'n22' }},
+            { group: 'edges',  data: { id: 'e32', source: 'n26', target: 'n23' }},
+            { group: 'edges',  data: { id: 'e33', source: 'n26', target: 'n24' }},
+            { group: 'edges',  data: { id: 'e34', source: 'n26', target: 'n25' }}
+        ],
+        style: [
+            {
+              selector: 'node',
+              style: {
+                'content': 'data(id)',
+                'background-color': 'red',
+                'width': '15px',
+                'height': '15px'
+              }
+            }
+
+            // , ...
+        ],
+        layout: {name: 'circle'},
+        ready: function() {}
+    });
+
+    cy.edges().unselectify();
+
+    cy.on('mouseover','node',function(evt) {
+        var node = evt.cyTarget;
+        node.css('content','data(name)');
+        console.log(node.id());
+    });
+
+    cy.on('mouseout','node',function(evt){
+        var node = evt.cyTarget;
+        node.css('*','');
+    });
+
+    var degmap = {};
+    var nodes = cy.nodes();
+    for (var i = 0; i < nodes.length; i++) {
+        degmap[nodes[i].id()] = { degree: nodes[i].degree() };
+    }
+    cy.batchData(degmap);
+
+    var annotations = {
+        'n1' : 'ion channel gating',
+        'n2' : 'nerve tissue protein',
+        'n3' : 'intercellular signaling',
+        'n4' : 'intercellular signaling',
+        'n5' : 'ion channel gating',
+        'n6' : 'nerve tissue protein',
+        'n7' : 'nerve tissue protein',
+        'n8' : 'ion channel gating',
+        'n9' : 'ion channel gating',
+        'n10': 'phosphorylation',
+        'n11': 'phosphorylation',
+        'n12': 'none',
+        'n13': 'phosphorylation',
+        'n14': 'phosphorylation',
+        'n15': 'nerve tissue protein',
+        'n16': 'ion channel gating',
+        'n17': 'calcium',
+        'n18': 'phosphorylation',
+        'n19': 'none',
+        'n20': 'calcium',
+        'n21': 'nerve tissue protein',
+        'n22': 'ion channel gating',
+        'n23': 'ion channel gating',
+        'n24': 'ion channel gating',
+        'n25': 'calcium',
+        'n26': 'calcium'
+    };
+
+    var annotcolors = {
+        'ion channel gating' : '#FF7200',
+        'nerve tissue protein' : '#E80514',
+        'intercellular signaling' : '#A912FF',
+        'phosphorylation' : '#0537E8',
+        'calcium' : '#O5FFEF',
+        'none' : 'grey'
+    };
+
+    var annotmap = {};
+    for (var id in annotations) {
+        if (annotations.hasOwnProperty(id)) {
+            annotmap[id] = { color: annotcolors[annotations[id]] };
+            console.log(id+annotcolors[annotations[id]]);
+        }
+    }
+    cy.batchData(annotmap);
+
+});
+</script>
+{% endblock %}
+
+
+{% block content %}
+
+    <div id="cy" class="well"></div>
+
+
+
+
+
+{% endblock %}
+

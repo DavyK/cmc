@@ -2,7 +2,7 @@ __author__ = 'davidkavanagh'
 import sys
 from  datetime import datetime
 from django.db import transaction
-from viz.models import DataSource, Gene, Isoform, CoexppModule, ModuleGene, DgeResult, DieResult, Pgc2SczSnp, Eqtl
+from viz.models import DataSource, Gene, Isoform, CoexppModule, ModuleGene, DgeResult, DieResult, Pgc2SczSnp, Eqtl, NetworkEdge
 
 
 INSERT_CHUNK_SIZE = 999
@@ -421,8 +421,6 @@ def process_eqtls_file(file_name):
             sys.stdout.write('\r  processed {0} records'.format(count))
             sys.stdout.flush()
 
-
-
 if __name__== '__main__':
 
     args_file = open(sys.argv[1], 'r')
@@ -434,26 +432,26 @@ if __name__== '__main__':
         print '{0}:{1}'.format(name, value)
         args[name] = value
 
-    add_data_source(args['data_source'])
+    #add_data_source(args['data_source'])
 
     global ENSG_2_HGNC_MAP
 
     print 'reading gene symbol map\n\n'
     ENSG_2_HGNC_MAP = make_map(args['gene_symbol_map'])
 
-    process_gene_file(args['genes'])
+    #process_gene_file(args['genes'])
 
-    process_isoform_file(args['isoforms'])
+    #process_isoform_file(args['isoforms'])
 
-    process_module_file(args['modules'])
+    #process_module_file(args['modules'])
 
-    process_gene_module_file(args['module_genes'])
+    #process_gene_module_file(args['module_genes'])
 
-    process_dge_results_file(args['dge_results'])
+    #process_dge_results_file(args['dge_results'])
 
-    process_die_results_file(args['die_results'])
+    #process_die_results_file(args['die_results'])
 
-    process_eqtls_file(args['eqtls'])
+    #process_eqtls_file(args['eqtls'])
 
 
 

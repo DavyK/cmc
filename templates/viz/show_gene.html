@@ -10,43 +10,44 @@
         <h5>{{isoforms|length}} Isoforms detected by MISO</h5>
 
         {% if dge %}
-            <h4>Differential Expression:</h4>
-            <h5>Gene:</h5>
-            <table class="table table-condensed table-hover" id="diff-expression-table">
-                <thead>
-                <tr>
-                    <th>Gene/Isoform?</th>
-                    <th>Symbol</th>
-                    <th>Ensembl Id</th>
-                    <th>Average Expression</th>
-                    <th>Log2 Fold Change</th>
-                    <th>P-value</th>
-                    <th>Adj. P-value</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>Gene</td>
-                    <td>{{gene.symbol}}</td>
-                    <td>{{gene.ensg_Id}}</td>
-                    <td>{{dge.aveExpr}}</td>
-                    <td>{{dge.logFC}}</td>
-                    <td>{{dge.p_val}}</td>
-                    <td>{{dge.adj_p_val}}</td>
-                </tr>
-                {% for iso in die %}
-                <tr>
-                    <td>Isoform</td>
-                    <td>{{gene.symbol}}</td>
-                    <td>{{iso.isoform.enst_Id}}</td>
-                    <td>{{iso.aveExpr}}</td>
-                    <td>{{iso.logFC}}</td>
-                    <td>{{iso.p_val}}</td>
-                    <td>{{iso.adj_p_val}}</td>
-                </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+
+                <h4>Differential Expression:</h4>
+                <h5>Gene:</h5>
+                <table class="table table-condensed table-hover" id="diff-expression-table">
+                    <thead>
+                    <tr>
+                        <th>Gene/Isoform?</th>
+                        <th>Symbol</th>
+                        <th>Ensembl Id</th>
+                        <th>Average Expression</th>
+                        <th>Log2 Fold Change</th>
+                        <th>P-value</th>
+                        <th>Adj. P-value</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>Gene</td>
+                        <td>{{gene.symbol}}</td>
+                        <td>{{gene.ensg_Id}}</td>
+                        <td>{{dge.aveExpr}}</td>
+                        <td>{{dge.logFC}}</td>
+                        <td>{{dge.p_val}}</td>
+                        <td>{{dge.adj_p_val}}</td>
+                    </tr>
+                    {% for iso in die %}
+                    <tr>
+                        <td>Isoform</td>
+                        <td>{{gene.symbol}}</td>
+                        <td>{{iso.isoform.enst_Id}}</td>
+                        <td>{{iso.aveExpr}}</td>
+                        <td>{{iso.logFC}}</td>
+                        <td>{{iso.p_val}}</td>
+                        <td>{{iso.adj_p_val}}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
 
             <h4>WGCNA:</h4>
             <p>This gene is in the {{module.parent_module.name}} module with {{module.parent_module.size}} other genes.</p>

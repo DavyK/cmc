@@ -8,6 +8,10 @@
     <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}/css/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}/css/cmcviz.css">
     <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}/font-awesome-4.3.0/css/font-awesome.min.css">
+    <script src="{{STATIC_URL}}/js/jquery-1.11.3.min.js"></script>
+
+    {% block head %}
+    {% endblock %}
 </head>
 <body>
 
@@ -46,7 +50,7 @@
     </div>
 </div>
 </body>
-    <script src="{{STATIC_URL}}/js/jquery-1.11.3.min.js"></script>
+
     <script src="{{STATIC_URL}}/js/bootstrap.js"></script>
     <script src="{{STATIC_URL}}/js/stupidtable.js"></script>
     <script src="{{STATIC_URL}}/js/cmc.js"></script>

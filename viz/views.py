@@ -115,6 +115,14 @@ def eqtl(request, snp_id):
     return render_to_response('viz/eqtl_egenes.html', data, context_instance=RequestContext(request))
 
 
+def network(request):
+
+    data = {
+    }
+
+    return render_to_response('viz/show_network.html', data, context_instance=RequestContext(request))
+
+
 @render_to('viz/module_table.html')
 def async_module_load(request):
 
