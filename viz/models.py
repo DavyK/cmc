@@ -121,8 +121,8 @@ class Eqtl(models.Model):
     gene = models.ForeignKey(Gene)
     mode = models.CharField(max_length=20, choices=[('c', 'CIS'), ('t', 'TRANS')])
 
-    beta = models.FloatField()
-    p_val = models.FloatField()
-    adj_p_val = models.FloatField()
+    beta = models.CharField(max_length=9, choices=[('u', 'Up'), ('d', 'Down'), ('n', 'No Change')])
+    p_val = models.FloatField(max_length=11, choices=[('l', '0.05 - 0.1'),('m', '0.01 - 0.05'),('h','<0.01')])
+    adj_p_val = models.FloatField(max_length=11, choices=[('l', '0.05 - 0.1'),('m', '0.01 - 0.05'),('h','<0.01')])
 
 

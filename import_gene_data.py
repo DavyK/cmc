@@ -9,6 +9,21 @@ INSERT_CHUNK_SIZE = 999
 
 ENSG_2_HGNC_MAP = {}
 
+def bin_beta(value):
+    if value < 0:
+        return 'down'
+    elif value > 0:
+        return 'up'
+    else:
+        return 'no change'
+
+def bin_pval(value):
+    if value <= 0.1 and value > 0.05:
+        return '0.05 - 0.1'
+    elif value <= 0.05 and value > 0.01:
+        return '0.01 - 0.05'
+    else:
+        return '<0.01'
 
 def list_chunker(l, n):
     """Yield successive n-sized chunks from l."""
@@ -399,15 +414,19 @@ def process_eqtls_file(file_name):
     print '\ninserting {0} eqtls in the database\n'.format(len(eqtls))
     eqtl_objects = []
     for snp_gene, d in eqtls.iteritems():
+        b = bin_beta(d['BETA'])
+        p = bin_pval(d['eQTL_P'])
+        ajd_p = bin_pval(d['eQTL_FDR'])
+
         eqtl_objects.append(
             Eqtl(
                 data_source=DATA_SOURCE,
                 snp=db_snps[d['SNP']],
                 gene=db_genes[d['GENE']],
                 mode=d['MODE'],
-                beta=d['BETA'],
-                p_val=d['eQTL_P'],
-                adj_p_val=d['eQTL_FDR'],
+                beta=b,
+                p_val=p,
+                adj_p_val=adj_p,
             )
         )
 
@@ -432,26 +451,26 @@ if __name__== '__main__':
         print '{0}:{1}'.format(name, value)
         args[name] = value
 
-    #add_data_source(args['data_source'])
+    add_data_source(args['data_source'])
 
     global ENSG_2_HGNC_MAP
 
     print 'reading gene symbol map\n\n'
     ENSG_2_HGNC_MAP = make_map(args['gene_symbol_map'])
 
-    #process_gene_file(args['genes'])
+    process_gene_file(args['genes'])
 
-    #process_isoform_file(args['isoforms'])
+    process_isoform_file(args['isoforms'])
 
-    #process_module_file(args['modules'])
+    process_module_file(args['modules'])
 
-    #process_gene_module_file(args['module_genes'])
+    process_gene_module_file(args['module_genes'])
 
-    #process_dge_results_file(args['dge_results'])
+    process_dge_results_file(args['dge_results'])
 
-    #process_die_results_file(args['die_results'])
+    process_die_results_file(args['die_results'])
 
-    #process_eqtls_file(args['eqtls'])
+    process_eqtls_file(args['eqtls'])
 
 
 
