@@ -7,7 +7,7 @@ from django.db import transaction, reset_queries
 from viz.models import DataSource, Gene, Isoform, ModuleGene, DgeResult, DieResult, Pgc2SczSnp, Eqtl
 
 syn = synapseclient.Synapse()
-syn.login('DavyK_mssm', 'blue3cheese6_@_syn', rememberMe=True)
+syn.login('<username>', '<password>', rememberMe=True)
 
 
 INSERT_CHUNK_SIZE = 999
