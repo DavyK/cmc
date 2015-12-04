@@ -1,5 +1,3 @@
-{% load viz_tags %}
-
 
 {% if eqtls.count != 0 %}
     <table id="eqtl-collapsable-table" class="table table-condensed table-hover table-to-sort">
@@ -26,7 +24,7 @@
         <tbody>
     {% for e in eqtls %}
         <tr>
-            <td><a href="{% url 'viz:eqtl' e.snp.id %}">{{e.snp.rs_Id}}</a></td>
+            <td><a href="{% url 'viz:eqtl' e.snp.rs_Id %}">{{e.snp.rs_Id}}</a></td>
             <td>{{e.snp.chrom_name}}</td>
             <td>{{e.snp.position}}</td>
 
@@ -40,16 +38,16 @@
             <td>{{e.snp.scz_p_val|floatformat:3}}</td>
 
 
-            <td>{{e.beta|beta_dir}}
-            {% if e.beta > 0 %}
+            <td>{{e.beta}}
+            {% if e.beta == 'up' %}
                 <i class="fa fa-arrow-up"></i>
             {% else %}
                 <i class="fa fa-arrow-down"></i>
             {% endif %}
             </td>
 
-            <td>{{e.p_val|bin_pval}}</td>
-            <td>{{e.adj_p_val|bin_pval}}</td>
+            <td>{{e.p_val}}</td>
+            <td>{{e.adj_p_val}}</td>
         </tr>
     {% endfor %}
         </tbody>

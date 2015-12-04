@@ -1,13 +1,19 @@
 __author__ = 'davidkavanagh'
 import sys
-from  datetime import datetime
-from django.db import transaction
-from viz.models import DataSource, Gene, Isoform, CoexppModule, ModuleGene, DgeResult, DieResult, Pgc2SczSnp, Eqtl, NetworkEdge
+import synapseclient
+import gc
+import django
+from django.db import transaction, reset_queries
+from viz.models import DataSource, Gene, Isoform, ModuleGene, DgeResult, DieResult, Pgc2SczSnp, Eqtl
+
+syn = synapseclient.Synapse()
+syn.login('DavyK_mssm', 'blue3cheese6_@_syn', rememberMe=True)
 
 
 INSERT_CHUNK_SIZE = 999
 
 ENSG_2_HGNC_MAP = {}
+
 
 def bin_beta(value):
     if value < 0:
@@ -17,18 +23,27 @@ def bin_beta(value):
     else:
         return 'no change'
 
+
 def bin_pval(value):
-    if value <= 0.1 and value > 0.05:
+    if value <=1 and value > 0.1:
+        return '0.1 - 1'
+    elif value <= 0.1 and value > 0.05:
         return '0.05 - 0.1'
     elif value <= 0.05 and value > 0.01:
         return '0.01 - 0.05'
     else:
         return '<0.01'
 
+
 def list_chunker(l, n):
     """Yield successive n-sized chunks from l."""
     for i in xrange(0, len(l), n):
         yield l[i:i+n]
+
+
+def get_synapse_file_path(syn_id):
+    entity = syn.get(syn_id)
+    return entity.path
 
 
 def add_data_source(file_name):
@@ -57,8 +72,8 @@ def add_data_source(file_name):
     DATA_SOURCE = ds
 
 
-def make_map(map_file_name):
-
+def make_map(syn_id):
+    map_file_name = get_synapse_file_path(syn_id)
     map_file = open(map_file_name, 'r')
     map_file.next() # skip header
 
@@ -76,14 +91,15 @@ def make_map(map_file_name):
     return id_to_symbol
 
 
-def process_gene_file(file_name):
-
+def process_gene_file(syn_id):
+    file_name = get_synapse_file_path(syn_id)
     gene_file = open(file_name, 'r')
     gene_file.next() # skip header
 
     genes = {}
 
-    print 'reading gene file\n\n'
+    sys.stdout.write('reading gene file\n\n')
+    sys.stdout.flush()
     for line in gene_file:
         fields = line.rstrip().rsplit()
         ens_t_ID, chrom, strand, start_bp, end_bp, ens_g_ID = fields[1], fields[2], fields[3], fields[4], fields[5], fields[12]
@@ -110,7 +126,8 @@ def process_gene_file(file_name):
 
     gene_objects = []
 
-    print 'inserting genes into database\n\n'
+    sys.stdout.write('inserting genes into database\n\n')
+    sys.stdout.flush()
     for g, d in genes.iteritems():
         gene_objects.append(Gene(ensg_Id=g, chrom_name=d['chrom'], start_bp=int(d['start_bp']), end_bp=int(d['end_bp']), strand=d['strand'], symbol=d['symbol']))
 
@@ -118,13 +135,16 @@ def process_gene_file(file_name):
     Gene.objects.bulk_create(gene_objects)
 
 
-def process_isoform_file(file_name):
+def process_isoform_file(syn_id):
 
     all_genes = Gene.objects.all()
 
     db_genes = {g.ensg_Id: g for g in all_genes}
 
-    print 'reading isoform file\n\n'
+    sys.stdout.write('reading isoform file\n\n')
+    sys.stdout.flush()
+
+    file_name = get_synapse_file_path(syn_id)
     metainfo_file = open(file_name, 'r')
     header = metainfo_file.next().rstrip().rsplit()
 
@@ -145,7 +165,8 @@ def process_isoform_file(file_name):
 
     metainfo_file.close()
 
-    print 'inserting isoforms into database\n\n'
+    sys.stdout.write('inserting isoforms into database\n\n')
+    sys.stdout.flush()
     iso_objects = []
     for iso, d in metainfo.iteritems():
         iso_objects.append(
@@ -162,10 +183,11 @@ def process_isoform_file(file_name):
 
     Isoform.objects.bulk_create(iso_objects)
 
-
+"""
 def process_module_file(file_name):
 
-    print 'reading module file\n\n'
+    sys.stdout.write('reading module file\n\n')
+    sys.stdout.flush()
     module_file = open(file_name, 'r')
     module_file.next() # skip header
 
@@ -178,7 +200,8 @@ def process_module_file(file_name):
 
         modules[module_name] = {'size': size, 'aveExpr': aveExpr}
 
-    print 'inserting modules into database\n\n'
+    sys.stdout.write('inserting modules into database\n\n')
+    sys.stdout.flush()
     module_objects = []
     for m, d in modules.iteritems():
         module_objects.append(
@@ -190,17 +213,20 @@ def process_module_file(file_name):
             )
         )
     CoexppModule.objects.bulk_create(module_objects)
+"""
 
-
-def process_gene_module_file(file_name):
+def process_gene_module_file(syn_id):
 
     all_genes = Gene.objects.all()
     db_genes = {g.ensg_Id: g for g in all_genes}
 
-    all_modules = CoexppModule.objects.all()
-    db_modules = {m.name: m for m in all_modules}
+    #all_modules = CoexppModule.objects.all()
+    #db_modules = {m.name: m for m in all_modules}
 
-    print 'reading module gene file\n\n'
+    sys.stdout.write('reading module gene file\n\n')
+    sys.stdout.flush()
+
+    file_name = get_synapse_file_path(syn_id)
     module_file = open(file_name, 'r')
     header = module_file.next().rstrip().rsplit()
 
@@ -213,7 +239,8 @@ def process_gene_module_file(file_name):
 
         module_genes[data['Gene']] = data
 
-    print 'inserting module genes into database\n\n'
+    sys.stdout.write('inserting module genes into database\n\n')
+    sys.stdout.flush()
     module_gene_objects = []
     for g, d in module_genes.iteritems():
 
@@ -222,7 +249,7 @@ def process_gene_module_file(file_name):
             ModuleGene(
                 data_source=DATA_SOURCE,
                 gene=db_genes[g],
-                parent_module=db_modules[d['Module']],
+                parent_module=d['Module'],
                 k_all=d['k.all'],
                 k_in=d['k.in'],
                 k_out=d['k.out'],
@@ -242,12 +269,15 @@ def process_gene_module_file(file_name):
     ModuleGene.objects.bulk_create(module_gene_objects)
 
 
-def process_dge_results_file(file_name):
+def process_dge_results_file(syn_id):
 
     all_genes = Gene.objects.all()
     db_genes = {g.ensg_Id: g for g in all_genes}
 
-    print 'reading DGE results file\n\n'
+    sys.stdout.write('reading DGE results file\n\n')
+    sys.stdout.flush()
+
+    file_name = get_synapse_file_path(syn_id)
     dge_file = open(file_name, 'r')
 
     header = dge_file.next().rstrip().rsplit()
@@ -259,7 +289,8 @@ def process_dge_results_file(file_name):
 
         dge[data['genes']] = data
 
-    print 'inserting DGE results into database\n\n'
+    sys.stdout.write('inserting DGE results into database\n\n')
+    sys.stdout.flush()
     dge_objects = []
     
     for g, d in dge.iteritems():
@@ -281,12 +312,15 @@ def process_dge_results_file(file_name):
     DgeResult.objects.bulk_create(dge_objects)
 
 
-def process_die_results_file(file_name):
+def process_die_results_file(syn_id):
 
     all_isoforms = Isoform.objects.all()
     db_isos = {i.enst_Id: i for i in all_isoforms}
 
-    print 'reading DIE results file\n\n'
+    sys.stdout.write('reading DIE results file\n\n')
+    sys.stdout.flush()
+
+    file_name = get_synapse_file_path(syn_id)
     die_file = open(file_name, 'r')
 
     header = die_file.next().rstrip().rsplit()
@@ -300,7 +334,8 @@ def process_die_results_file(file_name):
 
     die_objects = []
 
-    print 'inserting DIE results into database\n\n'
+    sys.stdout.write('inserting DIE results into database\n\n')
+    sys.stdout.flush()
     for i, d in die.iteritems():
         die_objects.append(
             DieResult(
@@ -334,113 +369,99 @@ def process_eqtls_file(file_name):
     eqtl_file = open(file_name)
 
     header = eqtl_file.next().rstrip().rsplit()
-
-    pgc_scz2_snps = {}
-
-    eqtls = {}
-
-    count = 0
-    for line in eqtl_file:
-        fields = line.rstrip().rsplit()
-
-        data = dict(zip(header, fields))
-        if data['SNP'] != 'SNP':
-            try:
-                pgc_scz2_snps[data['SNP']]
-            except KeyError:
-                pgc_scz2_snps[data['SNP']] = {
-                    'SNP_CHR': data['SNP_CHR'],
-                    'SNP_POS': data['SNP_POS'],
-                    'A1': data['A1'],
-                    'A2': data['A2'],
-                    'PGC_SCZ2_CASE_FREQ_A1': data['PGC_SCZ2_CASE_FREQ_A1'],
-                    'PGC_SCZ2_CONTROL_FREQ_A1': data['PGC_SCZ2_CONTROL_FREQ_A1'],
-                    'SCZ_ODDS_RATIO': data['SCZ_ODDS_RATIO'],
-                    'SCZ_P': data['SCZ_P']
-                    }
-            snp_gene = '{0}x{1}'.format(data['SNP'], data['GENE'])
-
-            try:
-                eqtls[snp_gene]
-
-            except KeyError:
-                eqtls[snp_gene] = {
-                    'SNP': data['SNP'],
-                    'GENE': data['GENE'],
-                    'MODE': 'cis',
-                    'BETA': data['eQTL_BETA'],
-                    'eQTL_P': data['eQTL_P'],
-                    'eQTL_FDR': data['eQTL_FDR']
-                }
-
-            count += 1
-            if count % 100000 == 0:
-                print 'read {0} eQTLs'.format(count)
-
-
-    snp_objects = []
-    for rsId, d in pgc_scz2_snps.iteritems():
-
-        snp_objects.append(
-            Pgc2SczSnp(
-                rs_Id=rsId,
-                chrom_name=d['SNP_CHR'],
-                position=d['SNP_POS'],
-                allele_a1=d['A1'],
-                allele_a2=d['A2'],
-                pgc_scz2_case_freq_a1=d['PGC_SCZ2_CASE_FREQ_A1'],
-                pgc_scz2_cont_freq_a1=d['PGC_SCZ2_CONTROL_FREQ_A1'],
-                scz_odd_ratio=d['SCZ_ODDS_RATIO'],
-                scz_p_val=d['SCZ_P'],
-            )
-        )
-
-    print '\ninserting {0} PGC2 snps into database\n'.format(len(pgc_scz2_snps))
-    snp_object_chunks = list_chunker(snp_objects, INSERT_CHUNK_SIZE)
-    count = 0
-    with transaction.atomic():
-        for l in snp_object_chunks:
-            Pgc2SczSnp.objects.bulk_create(l)
-            count += INSERT_CHUNK_SIZE
-            sys.stdout.write('\r  processed {0} records'.format(count))
-            sys.stdout.flush()
-
+    
     all_genes = Gene.objects.all()
     db_genes = {g.ensg_Id: g for g in all_genes}
 
+    count = 0
+    snps_already_seen = set()
+    pgc_snps_to_insert = []
+    for line in eqtl_file:
+        fields = line.rstrip().rsplit()
+        data = dict(zip(header, fields))
+
+        if data['SNP'] not in snps_already_seen:
+            pgc_snp = Pgc2SczSnp(
+                rs_Id=data['SNP'],
+                chrom_name=data['SNP_CHR'],
+                position=data['SNP_POS'],
+                allele_a1=data['A1'],
+                allele_a2=data['A2'],
+                pgc_scz2_case_freq_a1=data['PGC_SCZ2_CASE_FREQ_A1'],
+                pgc_scz2_cont_freq_a1=data['PGC_SCZ2_CONTROL_FREQ_A1'],
+                scz_odd_ratio=data['SCZ_ODDS_RATIO'],
+                scz_p_val=data['SCZ_P'],
+            )
+            pgc_snps_to_insert.append(pgc_snp)
+            snps_already_seen.add(data['SNP'])
+
+        if len(pgc_snps_to_insert) == INSERT_CHUNK_SIZE:
+            Pgc2SczSnp.objects.bulk_create(pgc_snps_to_insert)
+            count += len(pgc_snps_to_insert)
+            del pgc_snps_to_insert[:]
+            sys.stdout.write('\r processed {0} PGC SNPs'.format(count))
+            sys.stdout.flush()
+
+    if len(pgc_snps_to_insert) > 0:
+        Pgc2SczSnp.objects.bulk_create(pgc_snps_to_insert)
+        count += len(pgc_snps_to_insert)
+        del pgc_snps_to_insert[:]
+        sys.stdout.write('\r processed {0} PGC SNPs'.format(count))
+        sys.stdout.flush()
+
+
+    print len(snps_already_seen)
+    print "\nInserted {0} PGC SNPs into the database\n".format(count)
+
+
     all_snps = Pgc2SczSnp.objects.all()
-    db_snps = {snp.rs_Id: snp for snp in all_snps}
+    db_snps = {s.rs_Id: s for s in all_snps}
 
-    print '\ninserting {0} eqtls in the database\n'.format(len(eqtls))
-    eqtl_objects = []
-    for snp_gene, d in eqtls.iteritems():
-        b = bin_beta(d['BETA'])
-        p = bin_pval(d['eQTL_P'])
-        ajd_p = bin_pval(d['eQTL_FDR'])
+    print 'Matching Eqtls agains {0} snps'.format(len(db_snps))
 
-        eqtl_objects.append(
+    count = 0
+    eqtl_file.seek(0) # return pointer to begining of file
+    eqtl_file.next() # skip header
+    eqtls_to_insert = []
+    for line in eqtl_file:
+        fields = line.rstrip().rsplit()
+        data = dict(zip(header, fields))
+
+        b = bin_beta(float(data['eQTL_BETA']))
+        p = bin_pval(float(data['eQTL_P']))
+        adj_p = bin_pval(float(data['eQTL_FDR']))
+
+        eqtls_to_insert.append(
             Eqtl(
                 data_source=DATA_SOURCE,
-                snp=db_snps[d['SNP']],
-                gene=db_genes[d['GENE']],
-                mode=d['MODE'],
+                snp=db_snps[data['SNP']],
+                gene=db_genes[data['GENE']],
+                mode='CIS',
                 beta=b,
                 p_val=p,
                 adj_p_val=adj_p,
             )
         )
 
-    eqtl_object_chunks = list_chunker(eqtl_objects, INSERT_CHUNK_SIZE)
-    count = 0
-
-    with transaction.atomic():
-        for l in eqtl_object_chunks:
-            Eqtl.objects.bulk_create(l)
-            count += INSERT_CHUNK_SIZE
-            sys.stdout.write('\r  processed {0} records'.format(count))
+        if len(eqtls_to_insert) == INSERT_CHUNK_SIZE:
+            Eqtl.objects.bulk_create(eqtls_to_insert)
+            count += len(eqtls_to_insert)
+            del eqtls_to_insert[:]
+            sys.stdout.write('\r processed {0} eQTLs'.format(count))
             sys.stdout.flush()
 
+    if len(eqtls_to_insert) > 0:
+        Eqtl.objects.bulk_create(eqtls_to_insert)
+        count += len(eqtls_to_insert)
+        del eqtls_to_insert[:]
+        sys.stdout.write('\r processed {0} eQTLs'.format(count))
+        sys.stdout.flush()
+
+    print "\nInserted {0} eqtls into the database\n".format(count)
+
 if __name__== '__main__':
+
+    django.setup()
 
     args_file = open(sys.argv[1], 'r')
     args = {}
@@ -448,21 +469,24 @@ if __name__== '__main__':
     for line in args_file:
         fields = line.rstrip().rsplit(": ")
         name, value = fields[0], fields[1]
-        print '{0}:{1}'.format(name, value)
+        sys.stdout.write('{0}:{1}'.format(name, value))
+        sys.stdout.flush()
         args[name] = value
 
     add_data_source(args['data_source'])
 
     global ENSG_2_HGNC_MAP
 
-    print 'reading gene symbol map\n\n'
+    sys.stdout.write('reading gene symbol map\n\n')
+    sys.stdout.flush()
     ENSG_2_HGNC_MAP = make_map(args['gene_symbol_map'])
+
 
     process_gene_file(args['genes'])
 
     process_isoform_file(args['isoforms'])
 
-    process_module_file(args['modules'])
+    #process_module_file(args['modules'])
 
     process_gene_module_file(args['module_genes'])
 
@@ -471,6 +495,8 @@ if __name__== '__main__':
     process_die_results_file(args['die_results'])
 
     process_eqtls_file(args['eqtls'])
+
+    print "Finished!!!"
 
 
 

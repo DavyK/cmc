@@ -2,16 +2,16 @@
 
 {% block content %}
 <h4>Differentially Expressed Genes:</h4>
-<table class="table table-condensed table-hover" id="diff-expression-table">
+<table class="table table-condensed table-hover table-to-sort" id="diff-expression-table">
                 <thead>
                 <tr>
-                    <th>Rank</th>
-                    <th>Symbol</th>
-                    <th>Ensembl Id</th>
-                    <th>Average Expression</th>
-                    <th>Log2 Fold Change</th>
-                    <th>P-value</th>
-                    <th>Adj. P-value</th>
+                    <th data-sort="int">Rank</th>
+                    <th data-sort="string">Symbol</th>
+                    <th data-sort="string">Ensembl Id</th>
+                    <th data-sort="float">Average Expression</th>
+                    <th data-sort="float">Log2 Fold Change</th>
+                    <th data-sort="float">P-value</th>
+                    <th data-sort="float">Adj. P-value</th>
                 </tr>
                 </thead>
 
@@ -20,7 +20,7 @@
                 <tr>
                     <td>{{forloop.counter}}</td>
                     <td>{{gene.gene.symbol}}</td>
-                    <td><a href="{% url 'viz:gene' gene.gene.id %}">{{gene.gene.ensg_Id}}</a></td>
+                    <td><a href="{% url 'viz:gene' gene.gene.ensg_Id %}">{{gene.gene.ensg_Id}}</a></td>
                     <td>{{gene.aveExpr}}</td>
                     <td>{{gene.logFC}}</td>
                     <td>{{gene.p_val}}</td>

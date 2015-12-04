@@ -1,21 +1,19 @@
 {% extends 'cmc/base.html' %}
 
 {% block content %}
-<h4>WGCNA Modules:</h4>
+<h4>WGCNA {{module_name|capfirst}} Module:</h4>
 <table class="table table-condensed table-hover table-to-sort" id="diff-expression-table">
                 <thead>
                 <tr>
-                    <th data-sort="string">Name</th>
-                    <th data-sort="int">Size</th>
+                    <th data-sort="string">Gene</th>
                 </tr>
                 </thead>
 
                 <tbody>
-                {% for m in modules %}
+                {% for g in genes %}
                 <tr>
 
-                    <td><a href="{% url 'viz:list_module_genes' m.parent_module %}">{{m.parent_module|capfirst}}</a></td>
-                    <td>{{m.mCount}}</td>
+                    <td><a href="{% url 'viz:gene' g.gene.ensg_Id %}">{{g.gene.ensg_Id}} ({{g.gene.symbol}})</a></td>
                 </tr>
                 {% endfor %}
                 </tbody>

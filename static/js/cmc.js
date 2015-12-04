@@ -17,7 +17,7 @@ $(document).ready(function(){
 
         var moduleId;
         moduleId = $(this).attr('data-module-id');
-        $.get('/viz/async_module_load/', {module_obj_id: moduleId}, function(data){
+        $.get('/viz/async_module_load/', {module_name: moduleId}, function(data){
             $('#module-collapsable-table').html(data);
 
         });
@@ -37,7 +37,6 @@ $(document).ready(function(){
         geneId = $(this).attr('data-gene-id');
         $.get('/viz/async_eqtl_load/', {gene_obj_id: geneId}, function(data){
             $('#eqtl-collapsable-table').html(data);
-
         });
     });
 

@@ -18,7 +18,7 @@ class DataSource(models.Model):
 
 
 class Gene(models.Model):
-    ensg_Id = models.CharField(db_index=True, max_length=20, unique=True)
+    ensg_Id = models.CharField(db_index=True, max_length=20, unique=True, primary_key=True)
     chrom_name = models.CharField(max_length=5)
     start_bp = models.IntegerField()
     end_bp = models.IntegerField()
@@ -32,7 +32,7 @@ class Gene(models.Model):
 class Isoform(models.Model):
     parent_gene = models.ForeignKey(Gene)
 
-    enst_Id = models.CharField(max_length=20)
+    enst_Id = models.CharField(max_length=20, primary_key=True)
     iso_Id = models.CharField(max_length=200)
 
     chrom_name = models.CharField(max_length=5)
@@ -54,10 +54,12 @@ class DgeResult(models.Model):
     p_val = models.FloatField()
     adj_p_val = models.FloatField()
 
+    class Meta:
+        ordering = ['adj_p_val', 'p_val']
+
 
 class DieResult(models.Model):
     data_source = models.ForeignKey(DataSource)
-
     isoform = models.ForeignKey(Isoform)
 
     aveExpr = models.FloatField()
@@ -69,20 +71,18 @@ class DieResult(models.Model):
     p_val = models.FloatField()
     adj_p_val = models.FloatField()
 
-
+'''
 class CoexppModule(models.Model):
     data_source = models.ForeignKey(DataSource)
-    
     name = models.CharField(max_length=20)
     size = models.IntegerField()
     mean_expr = models.FloatField()
-
+'''
 
 class ModuleGene(models.Model):
     data_source = models.ForeignKey(DataSource)
-    
     gene = models.ForeignKey(Gene)
-    parent_module = models.ForeignKey(CoexppModule)
+    parent_module = models.CharField(max_length=20)
 
     k_all = models.FloatField()
     k_in = models.FloatField()
@@ -100,7 +100,7 @@ class ModuleGene(models.Model):
 
 
 class Pgc2SczSnp(models.Model):
-    rs_Id = models.CharField(db_index=True, max_length=20)
+    rs_Id = models.CharField(db_index=True, max_length=20, primary_key=True)
     chrom_name = models.CharField(max_length=5)
     position = models.IntegerField()
 
@@ -116,13 +116,12 @@ class Pgc2SczSnp(models.Model):
 
 class Eqtl(models.Model):
     data_source = models.ForeignKey(DataSource)
-
     snp = models.ForeignKey(Pgc2SczSnp)
     gene = models.ForeignKey(Gene)
     mode = models.CharField(max_length=20, choices=[('c', 'CIS'), ('t', 'TRANS')])
 
     beta = models.CharField(max_length=9, choices=[('u', 'Up'), ('d', 'Down'), ('n', 'No Change')])
-    p_val = models.FloatField(max_length=11, choices=[('l', '0.05 - 0.1'),('m', '0.01 - 0.05'),('h','<0.01')])
-    adj_p_val = models.FloatField(max_length=11, choices=[('l', '0.05 - 0.1'),('m', '0.01 - 0.05'),('h','<0.01')])
+    p_val = models.CharField(max_length=11, choices=[('n', '0.1 - 1'), ('l', '0.05 - 0.1'), ('m', '0.01 - 0.05'), ('h','<0.01')])
+    adj_p_val = models.CharField(max_length=11, choices=[('n', '0.1 - 1'), ('l', '0.05 - 0.1'), ('m', '0.01 - 0.05'), ('h','<0.01')])
 
 

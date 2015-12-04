@@ -16,7 +16,7 @@
                 <table class="table table-condensed table-hover" id="diff-expression-table">
                     <thead>
                     <tr>
-                        <th>Gene/Isoform?</th>
+                        <th>Gene/Isoform</th>
                         <th>Symbol</th>
                         <th>Ensembl Id</th>
                         <th>Average Expression</th>
@@ -50,7 +50,7 @@
                 </table>
 
             <h4>WGCNA:</h4>
-            <p>This gene is in the {{module.parent_module.name}} module with {{module.parent_module.size}} other genes.</p>
+            <a href="{% url 'viz:list_module_genes' m_gene.parent_module %}">{{m_gene.parent_module|capfirst}} module</a> - {{module_size.mCount}} genes total.</p>
 
             <table class="table table-condensed table-hover">
                 <tr>
@@ -70,24 +70,24 @@
                 </tr>
                 <tr>
                     
-                    <td>{{module.to_all|floatformat:3}}</td>
-                    <td>{{module.to_in|floatformat:3}}</td>
-                    <td>{{module.to_out|floatformat:3}}</td>
-                    <td>{{module.to_diff|floatformat:3}}</td>
-                    <td>{{module.to_in_normed|floatformat:3}}</td>
-                    <td>{{module.to_all_normed|floatformat:3}}</td>
+                    <td>{{m_gene.to_all|floatformat:3}}</td>
+                    <td>{{m_gene.to_in|floatformat:3}}</td>
+                    <td>{{m_gene.to_out|floatformat:3}}</td>
+                    <td>{{m_gene.to_diff|floatformat:3}}</td>
+                    <td>{{m_gene.to_in_normed|floatformat:3}}</td>
+                    <td>{{m_gene.to_all_normed|floatformat:3}}</td>
                     
-                    <td>{{module.k_all|floatformat:3}}</td>
-                    <td>{{module.k_in|floatformat:3}}</td>
-                    <td>{{module.k_out|floatformat:3}}</td>
-                    <td>{{module.k_diff|floatformat:3}}</td>
-                    <td>{{module.k_in_normed|floatformat:3}}</td>
-                    <td>{{module.k_all_normed|floatformat:3}}</td>
+                    <td>{{m_gene.k_all|floatformat:3}}</td>
+                    <td>{{m_gene.k_in|floatformat:3}}</td>
+                    <td>{{m_gene.k_out|floatformat:3}}</td>
+                    <td>{{m_gene.k_diff|floatformat:3}}</td>
+                    <td>{{m_gene.k_in_normed|floatformat:3}}</td>
+                    <td>{{m_gene.k_all_normed|floatformat:3}}</td>
                     
                 </tr>
             </table>
 
-            <a class="btn btn-primary" id="module-show-button" role="button" data-module-id="{{module.parent_module.id}}" data-toggle="collapse" href="#module-collapsable" aria-expanded="false" aria-controls="module-collapsable">
+            <a class="btn btn-primary" id="module-show-button" role="button" data-module-id="{{m_gene.parent_module}}" data-toggle="collapse" href="#module-collapsable" aria-expanded="false" aria-controls="module-collapsable">
                 Show Module Genes <span id="loadingModules" class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
             </a>
             <div class="collapse maxed-height well" id="module-collapsable">
@@ -97,7 +97,7 @@
 
             <h4>eQTLs:</h4>
             <p>{{gene.ensg_Id}} ({{gene.symbol}}) has {{eqtl_count}} eQTLs.</p>
-            <a class="btn btn-primary" id="eqtl-show-button" role="button" data-gene-id="{{gene.id}}" data-toggle="collapse" href="#eqtl-collapsable" aria-expanded="false" aria-controls="eqtl-collapsable">
+            <a class="btn btn-primary" id="eqtl-show-button" role="button" data-gene-id="{{gene.ensg_Id}}" data-toggle="collapse" href="#eqtl-collapsable" aria-expanded="false" aria-controls="eqtl-collapsable">
                 Show eQTLs <span id="loadingEqtls" class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
             </a>
             <div class="collapse" id="eqtl-collapsable">

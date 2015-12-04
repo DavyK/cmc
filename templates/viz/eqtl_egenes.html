@@ -51,7 +51,7 @@
         </tr>
     {% for e in egenes %}
         <tr>
-            <td><a href="{% url 'viz:gene' e.gene.id %}">{{e.gene.ensg_Id}}</a></td>
+            <td><a href="{% url 'viz:gene' e.gene.ensg_Id %}">{{e.gene.ensg_Id}}</a></td>
             <td>{{e.gene.symbol}}</td>
             <td>{{e.gene.chrom_name}}</a></td>
             <td>{{e.gene.strand}}</td>
