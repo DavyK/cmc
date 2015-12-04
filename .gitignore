@@ -4,4 +4,20 @@ db.sqlite3
 .idea/*
 dataimporter/
 dataimporter/*
+*.pyc
+*.egg-info
+pypi.info.txt
+build
+dist
+virtualenvs
+examples_temp
+.DS_Store
+deploy.sh
 
+doc/_build
+junk/
+nose.cfg
+notes.md
+notes/
+examples/
+jenkins/
