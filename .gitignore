@@ -21,3 +21,8 @@ notes.md
 notes/
 examples/
 jenkins/
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml

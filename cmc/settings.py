@@ -17,14 +17,18 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'y$vh8*a*hz#0^xequvz-&ho+8-!tj%wdzgfar0x+hsdm%qbn0e'
+with open('./secret_key.txt') as f:
+    SECRET_KEY = f.read().strip()
+
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_HTTPONLY = True
+CSRF_COOKIE_SECURE = True
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-TEMPLATE_DEBUG = True
-
-ALLOWED_HOSTS = []
+DEBUG = False
+TEMPLATE_DEBUG = False
+ALLOWED_HOSTS = ['.synapse.org',
+                 '127.0.0.1']
 
 
 # Application definition
@@ -84,15 +88,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
-STATIC_URL = '/static/'
-
-STATIC_ROOT = ''
-
-STATIC_PATH = os.path.join(BASE_DIR, 'static')
-
-STATICFILES_DIRS = (
-    STATIC_PATH,
-)
+STATIC_URL = 'https://s3.amazonaws.com/static.synapse.org/lomberg/davy_viz/static/'
+#STATIC_PATH = os.path.join(BASE_DIR, 'static')
+#STATICFILES_DIRS = (STATIC_PATH, )
 
 # Templates
 
