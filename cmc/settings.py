@@ -17,8 +17,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-with open('./secret_key.txt') as f:
-    SECRET_KEY = f.read().strip()
+SECRET_KEY = os.environ['DAVY_VIS_SECRET_KEY']
 
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_HTTPONLY = True
@@ -28,6 +27,7 @@ CSRF_COOKIE_SECURE = True
 DEBUG = False
 TEMPLATE_DEBUG = False
 ALLOWED_HOSTS = ['.synapse.org',
+                 '.elasticbeanstalk.com',
                  '127.0.0.1']
 
 
@@ -50,8 +50,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware'
 )
 
 ROOT_URLCONF = 'cmc.urls'
