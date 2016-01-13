@@ -12,7 +12,7 @@ def search(request):
     if request.method == 'POST':
 
         search_term = request.POST['search_term']
-        search_results = Gene.objects.filter(Q(ensg_Id=search_term) | Q(symbol=search_term))
+        search_results = Gene.objects.filter(Q(ensg_Id__iexact=search_term) | Q(symbol__iexact=search_term))
 
         if len(search_results) > 1:
             data['search_results'] = search_results
