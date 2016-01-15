@@ -17,14 +17,18 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'y$vh8*a*hz#0^xequvz-&ho+8-!tj%wdzgfar0x+hsdm%qbn0e'
+SECRET_KEY = os.environ['DAVY_VIS_SECRET_KEY']
+
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_HTTPONLY = True
+CSRF_COOKIE_SECURE = True
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-TEMPLATE_DEBUG = True
-
-ALLOWED_HOSTS = []
+DEBUG = False
+TEMPLATE_DEBUG = False
+ALLOWED_HOSTS = ['.synapse.org',
+                 '.elasticbeanstalk.com',
+                 '127.0.0.1']
 
 
 # Application definition
@@ -46,8 +50,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware'
 )
 
 ROOT_URLCONF = 'cmc.urls'
@@ -84,15 +87,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
-STATIC_URL = '/static/'
-
-STATIC_ROOT = ''
-
-STATIC_PATH = os.path.join(BASE_DIR, 'static')
-
-STATICFILES_DIRS = (
-    STATIC_PATH,
-)
+STATIC_URL = 'https://s3.amazonaws.com/static.synapse.org/lomberg/davy_viz/static/'
+#STATIC_PATH = os.path.join(BASE_DIR, 'static')
+#STATICFILES_DIRS = (STATIC_PATH, )
 
 # Templates
 
