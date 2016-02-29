@@ -16,35 +16,42 @@
 <body>
 
 
-<div class="container-fluid">
-    <div class="col-sm-2">
-        <h5>Analyses Results Sets:</h5>
-        <ul class="nav nav-pills nav-stacked">
-            <li><a href="{% url 'viz:list_page' 'dge' %}">All DE Genes</a></li>
-            <li><a href="{% url 'viz:list_page' 'die' %}">All DE Isoforms</a></li>
-            <li><a href="{% url 'viz:list_page' 'modules' %}">WGCNA Modules</a></li>
-            <!--<li><a href="#">Sherlock RTC results</a></li>-->
-            <!--<li><a href="#">Genetics Overlaps</a></li>-->
-
-        </ul>
-    </div>
-    <div class="col-sm-8">
-        <div class="row">
-        <div class="col-sm-8 col-sm-offset-2">
-        <form method="POST" action="{% url 'viz:search' %}" class="form-inline">
-            {% csrf_token %}
-            <div class="form-group">
-                <input type="text" name="search_term" class="form-control" placeholder=" Search by Gene Symbol or Ensembl Id">
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#fixed-top-navbar" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="#">Result Sets:</a>
             </div>
-            <select class="form-control">
-                {% for ds in data_sources %}
-                    <option value="{{ds.id}}">{{ds}}</option>
-                {% endfor %}
-            </select>
-            <input class="btn btn-primary" type="SUBMIT" value="Search">
-        </form>
+
+             <div class="collapse navbar-collapse" id="fixed-top-navbar">
+                 <ul class="nav navbar-nav">
+                    <li><a href="{% url 'viz:list_page' 'dge' %}">All DE Genes</a></li>
+                    <li><a href="{% url 'viz:list_page' 'die' %}">All DE Isoforms</a></li>
+                    <li><a href="{% url 'viz:list_page' 'modules' %}">WGCNA Modules</a></li>
+                    <form method="POST" action="{% url 'viz:search' %}" class="navbar-form navbar-left" role="search">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <input type="text" name="search_term" class="form-control" placeholder=" Search by Gene Symbol or Ensembl Id">
+                        </div>
+                        <input class="btn btn-primary" type="SUBMIT" value="Search">
+                    </form>
+                    <!--<li><a href="#">Sherlock RTC results</a></li>-->
+                    <!--<li><a href="#">Genetics Overlaps</a></li>-->
+                 </ul>
+             </div>
         </div>
-        </div>
+
+    </nav>
+
+<div class="container-fluid">
+
+
+
 {% block content %}
 {% endblock %}
     </div>

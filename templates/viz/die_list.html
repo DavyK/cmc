@@ -2,10 +2,9 @@
 
 {% block content %}
 <h4>Differentially Expressed Isoforms:</h4>
-<table class="table table-condensed table-hover tabl" id="diff-expression-table">
+<table class="table table-condensed table-hover table-to-sort" id="diff-expression-table">
                 <thead>
                 <tr>
-                    <th data-sort="int">Rank</th>
                     <th data-sort="string">Symbol</th>
                     <th data-sort="string">Ensembl Id</th>
                     <th data-sort="float">Average Expression</th>
@@ -18,7 +17,6 @@
                 <tbody>
                 {% for iso in die_results %}
                 <tr>
-                    <td>{{forloop.counter}}</td>
                     <td>{{iso.isoform.parent_gene.symbol}}</td>
                     <td><a href="{% url 'viz:gene' iso.isoform.parent_gene.ensg_Id %}">{{iso.isoform.enst_Id}}</a></td>
                     <td>{{iso.aveExpr}}</td>

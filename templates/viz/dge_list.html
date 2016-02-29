@@ -5,7 +5,6 @@
 <table class="table table-condensed table-hover table-to-sort" id="diff-expression-table">
                 <thead>
                 <tr>
-                    <th data-sort="int">Rank</th>
                     <th data-sort="string">Symbol</th>
                     <th data-sort="string">Ensembl Id</th>
                     <th data-sort="float">Average Expression</th>
@@ -18,7 +17,6 @@
                 <tbody>
                 {% for gene in dge_results %}
                 <tr>
-                    <td>{{forloop.counter}}</td>
                     <td>{{gene.gene.symbol}}</td>
                     <td><a href="{% url 'viz:gene' gene.gene.ensg_Id %}">{{gene.gene.ensg_Id}}</a></td>
                     <td>{{gene.aveExpr}}</td>
