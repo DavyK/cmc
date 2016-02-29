@@ -7,7 +7,7 @@ from viz.models import Gene, Isoform, ModuleGene, DgeResult, DieResult, DataSour
 
 def search(request):
     data_sources = DataSource.objects.all()
-
+    print "this is a test"
     data = {'data_sources': data_sources}
     if request.method == 'POST':
 
